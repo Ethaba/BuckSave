@@ -41,10 +41,6 @@ BuckSave is a personal budget tracker Android application developed in Kotlin us
 4. Connect an Android device or start an emulator.
 5. Click Run.
 
-## Demo Video
-
-[Watch Demo Video](PASTE_YOUR_VIDEO_LINK_HERE)
-
 ## APK
 
 The built APK is included separately as part of the submission.
