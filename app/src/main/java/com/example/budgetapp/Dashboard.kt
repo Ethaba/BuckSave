@@ -212,26 +212,49 @@ class Dashboard : AppCompatActivity() {
         val hasBudget = databaseHelper.hasBudget(username)
         val expenseCount = databaseHelper.getExpenseCount(username)
         val withinBudget = databaseHelper.isWithinBudget(username)
+        val categoryBudgets = databaseHelper.getCategoryBudgets(username)
+        val categoryTotals = databaseHelper.getCategoryTotals(username)
 
-        if (hasBudget) {
-            points += 20
-        }
+        if (hasBudget) points += 20
 
-        points += expenseCount * 10
+        points += (expenseCount * 8).coerceAtMost(40)
 
-        if (expenseCount >= 5) {
-            points += 20
-        }
+        if (expenseCount >= 5) points += 15
+        if (expenseCount >= 10) points += 20
 
-        if (withinBudget && expenseCount > 0) {
+        if (categoryBudgets.isNotEmpty()) points += 15
+
+        if (withinBudget && expenseCount > 0) points += 30
+
+        if (isAllCategoriesWithinBudget(categoryBudgets, categoryTotals)) {
             points += 30
         }
 
-        return points
+        return points.coerceAtMost(150)
+    }
+
+    private fun isAllCategoriesWithinBudget(
+        categoryBudgets: Map<String, Double>,
+        categoryTotals: Map<String, Double>
+    ): Boolean {
+        if (categoryBudgets.isEmpty() || categoryTotals.isEmpty()) {
+            return false
+        }
+
+        for ((category, spent) in categoryTotals) {
+            val budget = categoryBudgets[category] ?: 0.0
+
+            if (budget > 0 && spent > budget) {
+                return false
+            }
+        }
+
+        return true
     }
 
     private fun getLevel(points: Int): String {
         return when {
+            points >= 130 -> "Budget Master"
             points >= 100 -> "Saver"
             points >= 60 -> "Budget Builder"
             points >= 20 -> "Rookie"
