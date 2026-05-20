@@ -6,12 +6,16 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class ExpenseList : AppCompatActivity() {
 
     private lateinit var expenseContainer: LinearLayout
     private var currentUsername: String? = null
+
+    private val dateFormat = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
 
     data class ExpenseItem(
         val category: String,
@@ -71,20 +75,62 @@ class ExpenseList : AppCompatActivity() {
         loadExpensesFromDatabase(username)
 
         btnApplyFilter.setOnClickListener {
-            loadExpensesFromDatabase(username, spinnerCategory.selectedItem.toString())
+            val startDateText = etStartDate.text.toString().trim()
+            val endDateText = etEndDate.text.toString().trim()
+            val selectedCategory = spinnerCategory.selectedItem.toString()
+
+            if (startDateText.isNotEmpty() && endDateText.isEmpty()) {
+                etEndDate.error = "Select end date"
+                return@setOnClickListener
+            }
+
+            if (startDateText.isEmpty() && endDateText.isNotEmpty()) {
+                etStartDate.error = "Select start date"
+                return@setOnClickListener
+            }
+
+            if (startDateText.isNotEmpty() && endDateText.isNotEmpty()) {
+                val startDate = dateFormat.parse(startDateText)
+                val endDate = dateFormat.parse(endDateText)
+
+                if (startDate == null || endDate == null) {
+                    Toast.makeText(this, "Invalid date selected", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (startDate.after(endDate)) {
+                    Toast.makeText(this, "Start date cannot be after end date", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+            }
+
+            loadExpensesFromDatabase(
+                username,
+                selectedCategory,
+                startDateText,
+                endDateText
+            )
         }
     }
 
-    private fun loadExpensesFromDatabase(username: String, selectedCategory: String = "All Categories") {
+    private fun loadExpensesFromDatabase(
+        username: String,
+        selectedCategory: String = "All Categories",
+        startDateText: String = "",
+        endDateText: String = ""
+    ) {
         val databaseHelper = DatabaseHelper(this)
         val expensesFromDb = databaseHelper.getAllExpenses(username)
 
         expenseContainer.removeAllViews()
 
         if (expensesFromDb.isEmpty()) {
-            showEmptyMessage("No expenses found")
+            showEmptyMessage("No expense records found")
             return
         }
+
+        val startDate = if (startDateText.isNotEmpty()) dateFormat.parse(startDateText) else null
+        val endDate = if (endDateText.isNotEmpty()) dateFormat.parse(endDateText) else null
 
         var foundAny = false
 
@@ -101,6 +147,14 @@ class ExpenseList : AppCompatActivity() {
                 continue
             }
 
+            if (startDate != null && endDate != null) {
+                val expenseDate = dateFormat.parse(date)
+
+                if (expenseDate == null || expenseDate.before(startDate) || expenseDate.after(endDate)) {
+                    continue
+                }
+            }
+
             foundAny = true
 
             val item = ExpenseItem(
@@ -115,16 +169,19 @@ class ExpenseList : AppCompatActivity() {
         }
 
         if (!foundAny) {
-            showEmptyMessage("No expenses found for this category")
+            showEmptyMessage("No expense records found for the selected filters")
         }
     }
 
     private fun showEmptyMessage(message: String) {
+        expenseContainer.removeAllViews()
+
         val emptyText = TextView(this)
         emptyText.text = message
         emptyText.textSize = 14f
         emptyText.gravity = Gravity.CENTER
         emptyText.setTextColor(android.graphics.Color.BLACK)
+
         expenseContainer.addView(emptyText)
     }
 

@@ -178,9 +178,9 @@ class Dashboard : AppCompatActivity() {
         tvUserLevel.text = level
     }
 
-    private fun calculateCategoryPercent(categoryTotal: Double, totalSpent: Double): Int {
-        return if (totalSpent > 0) {
-            ((categoryTotal / totalSpent) * 100).toInt()
+    private fun calculateCategoryPercent(categorySpent: Double, categoryBudget: Double): Int {
+        return if (categoryBudget > 0) {
+            ((categorySpent / categoryBudget) * 100).toInt()
         } else {
             0
         }

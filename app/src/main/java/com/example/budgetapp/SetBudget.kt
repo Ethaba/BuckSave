@@ -2,11 +2,7 @@ package com.example.budgetapp
 
 import android.os.Bundle
 import android.view.Gravity
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
 class SetBudget : AppCompatActivity() {
@@ -17,19 +13,27 @@ class SetBudget : AppCompatActivity() {
     private val categoryList = mutableListOf<Pair<String, Double>>()
     private var currentUsername: String? = null
 
+    private val defaultCategories = mutableListOf(
+        "Food",
+        "Transport",
+        "Rent",
+        "Groceries",
+        "Entertainment",
+        "Utilities",
+        "Other"
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set_budget)
 
         databaseHelper = DatabaseHelper(this)
-
-        // Receives the logged-in user's username from Dashboard
         currentUsername = intent.getStringExtra("username")
 
         val btnBack = findViewById<TextView>(R.id.btnBack)
         val etMinGoal = findViewById<EditText>(R.id.etMinGoal)
         val etMaxBudget = findViewById<EditText>(R.id.etMaxBudget)
-        val etCategoryName = findViewById<EditText>(R.id.etCategoryName)
+        val spinnerCategoryName = findViewById<Spinner>(R.id.spinnerCategoryName)
         val etCategoryAmount = findViewById<EditText>(R.id.etCategoryAmount)
         val etNotes = findViewById<EditText>(R.id.etNotes)
         val btnAddCategory = findViewById<Button>(R.id.btnAddCategory)
@@ -37,18 +41,20 @@ class SetBudget : AppCompatActivity() {
 
         categoryContainer = findViewById(R.id.categoryContainer)
 
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            defaultCategories
+        )
+        spinnerCategoryName.adapter = adapter
+
         btnBack.setOnClickListener {
             finish()
         }
 
         btnAddCategory.setOnClickListener {
-            val name = etCategoryName.text.toString().trim()
+            val name = spinnerCategoryName.selectedItem.toString()
             val amountText = etCategoryAmount.text.toString().trim()
-
-            if (name.isEmpty()) {
-                etCategoryName.error = "Enter category name"
-                return@setOnClickListener
-            }
 
             if (amountText.isEmpty()) {
                 etCategoryAmount.error = "Enter category amount"
@@ -67,14 +73,13 @@ class SetBudget : AppCompatActivity() {
             }
 
             if (alreadyExists) {
-                etCategoryName.error = "Category already added"
+                Toast.makeText(this, "$name already added", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             categoryList.add(Pair(name, amount))
             addCategoryRow(name, amount)
 
-            etCategoryName.text.clear()
             etCategoryAmount.text.clear()
         }
 
@@ -119,11 +124,13 @@ class SetBudget : AppCompatActivity() {
             }
 
             if (categoryList.isEmpty()) {
-                Toast.makeText(this, "Please add at least one category", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please add at least one category budget", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val budgetSaved = databaseHelper.insertBudget(username, minGoal, maxGoal, notes)
+
+            databaseHelper.clearCategories(username)
 
             var allCategoriesSaved = true
 
@@ -167,9 +174,6 @@ class SetBudget : AppCompatActivity() {
         editButton.textSize = 11f
         editButton.setBackgroundColor(android.graphics.Color.rgb(0, 80, 184))
         editButton.setTextColor(android.graphics.Color.WHITE)
-        editButton.setPadding(8, 0, 8, 0)
-        editButton.minWidth = 0
-        editButton.minHeight = 0
 
         val editParams = LinearLayout.LayoutParams(120, 80)
         editParams.setMargins(4, 0, 4, 0)
@@ -180,16 +184,19 @@ class SetBudget : AppCompatActivity() {
         deleteButton.textSize = 11f
         deleteButton.setBackgroundColor(android.graphics.Color.rgb(220, 53, 69))
         deleteButton.setTextColor(android.graphics.Color.WHITE)
-        deleteButton.setPadding(8, 0, 8, 0)
-        deleteButton.minWidth = 0
-        deleteButton.minHeight = 0
 
         val deleteParams = LinearLayout.LayoutParams(140, 80)
         deleteParams.setMargins(4, 0, 0, 0)
         deleteButton.layoutParams = deleteParams
 
         editButton.setOnClickListener {
-            findViewById<EditText>(R.id.etCategoryName).setText(categoryName)
+            val spinner = findViewById<Spinner>(R.id.spinnerCategoryName)
+            val categoryIndex = defaultCategories.indexOf(categoryName)
+
+            if (categoryIndex >= 0) {
+                spinner.setSelection(categoryIndex)
+            }
+
             findViewById<EditText>(R.id.etCategoryAmount).setText(amount.toString())
 
             categoryList.remove(Pair(categoryName, amount))

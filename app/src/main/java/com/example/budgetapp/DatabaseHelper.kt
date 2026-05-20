@@ -208,6 +208,11 @@ class DatabaseHelper(context: Context) :
         return result != -1L
     }
 
+    fun clearCategories(username: String) {
+        val db = writableDatabase
+        db.delete("categories", "username=?", arrayOf(username))
+    }
+
     fun getCategories(username: String): MutableList<String> {
         val list = mutableListOf<String>()
         val db = readableDatabase
