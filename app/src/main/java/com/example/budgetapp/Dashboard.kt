@@ -116,6 +116,25 @@ class Dashboard : AppCompatActivity() {
         tvProgressPercent.text = "$percentageUsed%"
         progressBudget.progress = percentageUsed.coerceAtMost(100)
 
+        if (usedAmount < minGoal) {
+
+            progressBudget.progressDrawable =
+                getDrawable(R.drawable.progress_budget_orange)
+
+        }
+        else if (usedAmount > totalBudget) {
+
+            progressBudget.progressDrawable =
+                getDrawable(R.drawable.progress_budget_red)
+
+        }
+        else {
+
+            progressBudget.progressDrawable =
+                getDrawable(R.drawable.progress_budget)
+
+        }
+
         val categoryTotals = databaseHelper.getCategoryTotals(username)
         val categoryBudgets = databaseHelper.getCategoryBudgets(username)
 
