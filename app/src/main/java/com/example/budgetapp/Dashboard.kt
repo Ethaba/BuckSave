@@ -46,7 +46,9 @@ class Dashboard : AppCompatActivity() {
         }
 
         btnMoreOptions.setOnClickListener {
-            Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, Insights::class.java)
+            intent.putExtra("username", currentUsername)
+            startActivity(intent)
         }
 
         navReports.setOnClickListener {

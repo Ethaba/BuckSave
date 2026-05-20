@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BudgetApp">
         <activity
+            android:name=".Insights"
+            android:exported="false" />
+        <activity
             android:name=".Profile"
             android:exported="false" />
         <activity
