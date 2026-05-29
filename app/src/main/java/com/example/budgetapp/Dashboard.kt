@@ -118,6 +118,13 @@ class Dashboard : AppCompatActivity() {
         tvProgressPercent.text = "$percentageUsed%"
         progressBudget.progress = percentageUsed.coerceAtMost(100)
 
+        // Change remaining text color based on balance
+        if (remainingAmount < 0) {
+            tvRemaining.setTextColor(android.graphics.Color.RED)
+        } else {
+            tvRemaining.setTextColor(android.graphics.Color.parseColor("#008A45"))
+        }
+
         if (usedAmount < minGoal) {
 
             progressBudget.progressDrawable =

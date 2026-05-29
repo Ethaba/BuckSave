@@ -37,10 +37,10 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:gravity="center"
-                        android:text="‹"
+                        android:text="&lt;"
                         android:textColor="#0050B8"
-                        android:textSize="34sp"
-                        android:textStyle="bold" />
+                        android:textSize="30sp"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:layout_width="0dp"
