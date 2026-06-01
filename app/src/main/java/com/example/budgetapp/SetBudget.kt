@@ -43,9 +43,11 @@ class SetBudget : AppCompatActivity() {
 
         val adapter = ArrayAdapter(
             this,
-            android.R.layout.simple_spinner_dropdown_item,
+            R.layout.spinner_item,
             defaultCategories
         )
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategoryName.adapter = adapter
 
         btnBack.setOnClickListener {
