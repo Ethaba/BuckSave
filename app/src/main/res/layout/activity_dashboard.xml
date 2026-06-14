@@ -201,13 +201,13 @@
                         android:textStyle="bold" />
 
                     <Button
-                        android:id="@+id/btnMoreOptions"
+                        android:id="@+id/btnInsights"
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_margin="8dp"
                         android:layout_weight="1"
                         android:backgroundTint="#0050B8"
-                        android:text="More Options"
+                        android:text="Insights"
                         android:textColor="#FFFFFF"
                         android:textSize="12sp"
                         android:textStyle="bold" />

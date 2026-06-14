@@ -25,7 +25,7 @@ class Dashboard : AppCompatActivity() {
         val btnSetBudget = findViewById<Button>(R.id.btnSetBudget)
         val btnAddExpense = findViewById<Button>(R.id.btnAddExpense)
         val btnViewExpenses = findViewById<Button>(R.id.btnViewExpenses)
-        val btnMoreOptions = findViewById<Button>(R.id.btnMoreOptions)
+        val btnInsights = findViewById<Button>(R.id.btnInsights)
 
         btnSetBudget.setOnClickListener {
             val intent = Intent(this, SetBudget::class.java)
@@ -45,7 +45,7 @@ class Dashboard : AppCompatActivity() {
             startActivity(intent)
         }
 
-        btnMoreOptions.setOnClickListener {
+        btnInsights.setOnClickListener {
             val intent = Intent(this, Insights::class.java)
             intent.putExtra("username", currentUsername)
             startActivity(intent)
