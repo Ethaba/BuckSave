@@ -161,6 +161,8 @@ Lecturers and testers are encouraged to test the following functionality:
 - Overspending warnings
 
 ---
+## YouTube Demonstration Video Link
+https://youtu.be/Vt1HwUtEHzM?si=FZ5aWJp0zllwzvYm 
 
 # APK
 
