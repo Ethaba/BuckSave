@@ -177,7 +177,7 @@ class SetBudget : AppCompatActivity() {
         editButton.setBackgroundColor(android.graphics.Color.rgb(0, 80, 184))
         editButton.setTextColor(android.graphics.Color.WHITE)
 
-        val editParams = LinearLayout.LayoutParams(120, 80)
+        val editParams = LinearLayout.LayoutParams(140, 100)
         editParams.setMargins(4, 0, 4, 0)
         editButton.layoutParams = editParams
 
@@ -187,7 +187,7 @@ class SetBudget : AppCompatActivity() {
         deleteButton.setBackgroundColor(android.graphics.Color.rgb(220, 53, 69))
         deleteButton.setTextColor(android.graphics.Color.WHITE)
 
-        val deleteParams = LinearLayout.LayoutParams(140, 80)
+        val deleteParams = LinearLayout.LayoutParams(160, 100)
         deleteParams.setMargins(4, 0, 0, 0)
         deleteButton.layoutParams = deleteParams
 
